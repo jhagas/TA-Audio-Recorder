@@ -1,7 +1,10 @@
 #include <Arduino.h>
 
+TMRpcm audio;
+File myFile;
+
 // delay function for serial log.
-void wait_min(int secs)
+void wait_sec(int secs)
 {
   int count = 0;
   while (1)
@@ -17,4 +20,19 @@ void wait_min(int secs)
   }
   Serial.println();
   return;
+}
+
+void SD_init()
+{
+  Serial.println("LOADING:Initializing SD card");
+  if (!SD.begin(SD_ChipSelectPin))
+  {
+    Serial.println("ERROR:An Error has occurred while mounting SD");
+  }
+  while (!SD.begin(SD_ChipSelectPin))
+  {
+    Serial.print(".");
+    delay(500);
+  }
+  audio.CSPin = SD_ChipSelectPin;
 }

@@ -5,50 +5,72 @@
 #include "const.h"
 #include "functions.hpp"
 
-TMRpcm audio; // make instance variable
-int file_number = 0;
-char filePrefixname[50] = "spy";
-char exten[10] = ".wav";
-
 void setup()
 {
-  // initializes the serial connection between the Arduino and any connected serial device(e.g. computer, phone, raspberry pi...)
+  // initializes the serial connection between the Arduino and computers
   Serial.begin(115200);
+
   // Sets up the pins
-  pinMode(mic_pin0, INPUT);
-  Serial.println("loading... SD card");
-  if (!SD.begin(SD_ChipSelectPin))
+  for (int i = 0; i < 3; i++)
   {
-    Serial.println("An Error has occurred while mounting SD");
+    pinMode(mic_pin[i], INPUT);
   }
-  while (!SD.begin(SD_ChipSelectPin))
-  {
-    Serial.print(".");
-    delay(500);
-  }
-  audio.CSPin = SD_ChipSelectPin;
+
+  SD_init();
 }
 
 void loop()
 {
-  Serial.println("####################################################################################");
-  char fileSlNum[20] = "";
-  itoa(file_number, fileSlNum, 10);
-  char file_name[50] = "";
-  strcat(file_name, filePrefixname);
-  strcat(file_name, fileSlNum);
-  strcat(file_name, exten);
-  Serial.print("New File Name: ");
-  Serial.println(file_name);
+  Serial.setTimeout(1000L);
+  if (Serial.available() > 0)
+  {
+    String command = Serial.readString();
+    command.trim();
+    if (command == "RECORD")
+    {
+      // Clean all previous file in MicroSD
+      Serial.println("EVENT:Cleaning MicroSD");
+      for (int file_number = 0; file_number < 3; file_number++)
+      {
+        SD.remove(filename[file_number]);
+      }
 
-  audio.startRecording(file_name, sample_rate, mic_pin0);
-  Serial.println("startRecording ");
+      // Record from 3 separate microphone, one by one
+      for (int file_number = 0; file_number < 3; file_number++)
+      {
+        int microphone = file_number + 1;
+        Serial.println("EVENT:Recording Microphone " + microphone);
 
-  // record audio for 2 sec. means, in this loop process record 2 secs of audio.
-  wait_min(2);
+        // record audio for 2 sec. means, in this loop process record 2 secs of audio.
+        audio.startRecording(filename[file_number], sample_rate, mic_pin[file_number]);
+        wait_sec(2);
+        audio.stopRecording(filename[file_number]);
+      }
+      Serial.println("EVENT:Stop Recording");
 
-  audio.stopRecording(file_name);
-  Serial.println("stopRecording");
-  file_number++;
-  Serial.println("####################################################################################");
+      // Sending data to PC
+      Serial.println("EVENT:Sending Data to PC");
+      for (int file_number = 0; file_number < 3; file_number++)
+      {
+        String name = filename[file_number];
+        myFile = SD.open(filename[file_number]);
+        if (myFile)
+        {
+          Serial.println("EVENT:Sending File " + name);
+          // read from the file until there's nothing else in it:
+          while (myFile.available())
+          {
+            Serial.write(myFile.read());
+          }
+          // close the file:
+          myFile.close();
+        }
+        else
+        {
+          // if the file didn't open, print an error:
+          Serial.println("ERROR:Failed Opening " + name);
+        }
+      }
+    }
+  }
 }
