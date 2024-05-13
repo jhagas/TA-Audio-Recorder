@@ -46,7 +46,7 @@ void loop()
         wait_sec(2);
         audio.stopRecording(filename[file_number]);
       }
-      Serial.println("EVENT:Stop Recording");
+      Serial.println("EVENT:Done Recording");
 
       // Sending data to PC
       Serial.println("EVENT:Sending Data to PC");

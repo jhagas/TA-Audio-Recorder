@@ -24,7 +24,7 @@ void wait_sec(int secs)
 
 void SD_init()
 {
-  Serial.println("LOADING:Initializing SD card");
+  Serial.println("EVENT:Initializing SD card");
   if (!SD.begin(SD_ChipSelectPin))
   {
     Serial.println("ERROR:An Error has occurred while mounting SD");
