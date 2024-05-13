@@ -39,7 +39,7 @@ void loop()
       for (int file_number = 0; file_number < 3; file_number++)
       {
         int microphone = file_number + 1;
-        Serial.println("EVENT:Recording Microphone " + microphone);
+        Serial.println("EVENT:Recording Microphone " + String(microphone));
 
         // record audio for 2 sec. means, in this loop process record 2 secs of audio.
         audio.startRecording(filename[file_number], sample_rate, mic_pin[file_number]);
@@ -56,6 +56,7 @@ void loop()
         myFile = SD.open(filename[file_number]);
         if (myFile)
         {
+          Serial.println("");
           Serial.println("EVENT:Sending File " + name);
           // read from the file until there's nothing else in it:
           while (myFile.available())

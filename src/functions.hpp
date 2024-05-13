@@ -29,6 +29,10 @@ void SD_init()
   {
     Serial.println("ERROR:An Error has occurred while mounting SD");
   }
+  else
+  {
+    Serial.println("EVENT:SD Card Intialized!");
+  }
   while (!SD.begin(SD_ChipSelectPin))
   {
     Serial.print(".");
