@@ -17,7 +17,6 @@ void wait_sec(int secs)
       break;
     }
   }
-  Serial.println();
   return;
 }
 
@@ -34,7 +33,6 @@ void SD_init()
   }
   while (!SD.begin(SD_ChipSelectPin))
   {
-    Serial.print(".");
     delay(500);
   }
   audio.CSPin = SD_ChipSelectPin;

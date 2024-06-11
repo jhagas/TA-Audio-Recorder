@@ -56,15 +56,17 @@ void loop()
         myFile = SD.open(filename[file_number]);
         if (myFile)
         {
-          Serial.println("");
           Serial.println("EVENT:Sending File " + name);
+          delay(500);
           // read from the file until there's nothing else in it:
           while (myFile.available())
           {
             Serial.write(myFile.read());
           }
+          Serial.print("\n");
           // close the file:
           myFile.close();
+          delay(500);
         }
         else
         {
@@ -72,6 +74,7 @@ void loop()
           Serial.println("ERROR:Failed Opening " + name);
         }
       }
+      Serial.println("EVENT:Done Sending Data to PC");
     }
   }
 }
