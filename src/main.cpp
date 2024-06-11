@@ -57,7 +57,7 @@ void loop()
         if (myFile)
         {
           Serial.println("EVENT:Sending File " + name);
-          delay(500);
+          delay(50);
           // read from the file until there's nothing else in it:
           while (myFile.available())
           {
@@ -66,7 +66,7 @@ void loop()
           Serial.print("\n");
           // close the file:
           myFile.close();
-          delay(500);
+          delay(50);
         }
         else
         {
