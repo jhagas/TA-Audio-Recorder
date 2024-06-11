@@ -25,5 +25,6 @@ Here is a list of all messages that possible:
 7. `EVENT:Sending Data to PC`
 8. `EVENT:Sending File {filename}`
 9. `ERROR:Failed Opening {filename}`
+10. `EVENT:Done Sending Data to PC`
 
 if the messages doesn't begin with `EVENT` or `ERROR`, the arduino is sending the audio files
